@@ -5,16 +5,18 @@
 #include <cstring>
 #include <unistd.h>
 
+void error()
+{
+	std::cout<<"An error has occured."<<std::endl;
+	exit(1);
+}
+
 int main(int argc, char *argv[])
 {
 	int port, sock_descriptor, buffer;
 	std::string ipAddr, msg;
 
-	if (argc < 4)
-	{
-		std::cout<<"Error: Not arguments delivered"<<std::endl;
-		return 0;
-	}
+	if (argc < 4) error();
 
 	ipAddr = argv[1];
 	port = std::stoi(argv[2]);
@@ -26,11 +28,7 @@ int main(int argc, char *argv[])
 
 	sock_descriptor = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP
 
-	if (sock_descriptor == -1)
-	{
-		std::cout<<"Error: couldn't create socket connection"<<std::endl;
-		return 0;
-	}
+	if (sock_descriptor == -1) error();
 
 	struct sockaddr_in server;
 	const char *ip_addr = ipAddr.c_str();
@@ -41,27 +39,16 @@ int main(int argc, char *argv[])
 	server.sin_family = AF_INET; // IPv4
 	server.sin_port = htons(port);
 
-	if (connect(sock_descriptor, (struct sockaddr *)&server, sizeof(server)) < 0)
-	{
-		std::cout<<"Error: Couldn't connect to server"<<std::endl;
-		return 0;
-	}
+	if (connect(sock_descriptor, (struct sockaddr *)&server, sizeof(server)) < 0) error();
 	else
 	{
 		std::cout<<"Connected to ["<<ipAddr<<":"<<port<<"]"<<std::endl;
 
-		if (send(sock_descriptor, message, strlen(message), 0) < 0)
-		{
-			std::cout<<"Error: Couldn't send message to server"<<std::endl;
-			return 0;
-		}
+		if (send(sock_descriptor, message, strlen(message), 0) < 0) error();
+
 		std::cout<<"[CLIENT]: "<<message<<std::endl;
 
-		if (recv(sock_descriptor, server_reply, buffer, 0) < 0)
-		{
-			std::cout<<"Error: Couldn't read from server"<<std::endl;
-			return 0;
-		}
+		if (recv(sock_descriptor, server_reply, buffer, 0) < 0) error();
 
 		std::cout<<"[SERVER]: " << server_reply<<std::endl;
 
