@@ -11,16 +11,9 @@ static void error()
 	exit(1);
 }
 
-void connectToServer(char* argv[])
+void connectToServer(int port, std::string ipAddr, std::string msg)
 {
-	int port, sock_descriptor, buffer;
-	std::string ipAddr, msg;
-
-	if (argc < 4) error();
-
-	ipAddr = argv[1];
-	port = std::stoi(argv[2]);
-	msg = argv[3];
+	int sock_descriptor, buffer;
 	buffer = 256;
 
 	const char* ip_addr = ipAddr.c_str();
@@ -58,6 +51,4 @@ void connectToServer(char* argv[])
 		
 		exit(1);
 	}
-
-	return 1;
 }
