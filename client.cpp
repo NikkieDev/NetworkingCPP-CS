@@ -5,6 +5,8 @@
 #include <cstring>
 #include <unistd.h>
 
+// unix code
+
 void error()
 {
 	std::cout<<"An error has occured."<<std::endl;
