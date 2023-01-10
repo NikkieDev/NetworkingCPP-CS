@@ -21,8 +21,11 @@ int main(int argc, char *argv[])
 	ipAddr = argv[1];
 	port = std::stoi(argv[2]);
 	msg = argv[3];
-
 	buffer = 256;
+
+	const char* ip_addr = ipAddr.c_str();
+	const char* message = msg.c_str();
+	char server_reply[buffer];
 
 	std::cout<<"Connecting to ["<<ipAddr<<":"<<port<<"]"<<std::endl;
 
@@ -31,9 +34,6 @@ int main(int argc, char *argv[])
 	if (sock_descriptor == -1) error();
 
 	struct sockaddr_in server;
-	const char *ip_addr = ipAddr.c_str();
-	const char *message = msg.c_str();
-	char server_reply[buffer];
 
 	server.sin_addr.s_addr = inet_addr(ip_addr);
 	server.sin_family = AF_INET; // IPv4
