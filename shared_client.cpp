@@ -11,44 +11,47 @@ static void error()
 	exit(1);
 }
 
-void connectToServer(int port, std::string ipAddr, std::string msg)
+extern "C"
 {
-	int sock_descriptor, buffer;
-	buffer = 256;
+    __declspec(dllexport) void connectToServer(int port, std::string ipAddr, std::string msg)
+    {
+        int sock_descriptor, buffer;
+        buffer = 256;
 
-	const char* ip_addr = ipAddr.c_str();
-	const char* message = msg.c_str();
-	char server_reply[buffer];
+        const char* ip_addr = ipAddr.c_str();
+        const char* message = msg.c_str();
+        char server_reply[buffer];
 
-	std::cout<<"Connecting to ["<<ipAddr<<":"<<port<<"]"<<std::endl;
+        std::cout<<"Connecting to ["<<ipAddr<<":"<<port<<"]"<<std::endl;
 
-	sock_descriptor = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP
+        sock_descriptor = socket(AF_INET, SOCK_STREAM, 0); // AF_INET = IPv4, SOCK_STREAM = TCP
 
-	if (sock_descriptor == -1) error();
+        if (sock_descriptor == -1) error();
 
-	struct sockaddr_in server;
+        struct sockaddr_in server;
 
-	server.sin_addr.s_addr = inet_addr(ip_addr);
-	server.sin_family = AF_INET; // IPv4
-	server.sin_port = htons(port);
+        server.sin_addr.s_addr = inet_addr(ip_addr);
+        server.sin_family = AF_INET; // IPv4
+        server.sin_port = htons(port);
 
-	if (connect(sock_descriptor, (struct sockaddr *)&server, sizeof(server)) < 0) error();
-	else
-	{
-		std::cout<<"Connected to ["<<ipAddr<<":"<<port<<"]"<<std::endl;
+        if (connect(sock_descriptor, (struct sockaddr *)&server, sizeof(server)) < 0) error();
+        else
+        {
+            std::cout<<"Connected to ["<<ipAddr<<":"<<port<<"]"<<std::endl;
 
-		if (send(sock_descriptor, message, strlen(message), 0) < 0) error();
+            if (send(sock_descriptor, message, strlen(message), 0) < 0) error();
 
-		std::cout<<"[CLIENT]: "<<message<<std::endl;
+            std::cout<<"[CLIENT]: "<<message<<std::endl;
 
-		if (recv(sock_descriptor, server_reply, buffer, 0) < 0) error();
+            if (recv(sock_descriptor, server_reply, buffer, 0) < 0) error();
 
-		std::cout<<"[SERVER]: " << server_reply<<std::endl;
+            std::cout<<"[SERVER]: " << server_reply<<std::endl;
 
-		std::cout<<"Closing connection..."<<std::endl;
-		close(sock_descriptor);
-		std::cout<<"Disconnected"<<std::endl;
-		
-		exit(1);
-	}
+            std::cout<<"Closing connection..."<<std::endl;
+            close(sock_descriptor);
+            std::cout<<"Disconnected"<<std::endl;
+            
+            exit(1);
+        }
+    }
 }
