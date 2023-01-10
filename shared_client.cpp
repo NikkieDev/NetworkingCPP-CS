@@ -13,7 +13,7 @@ static void error()
 
 extern "C"
 {
-    DLLIMPORT void connectToServer(int port, std::string ipAddr, std::string msg)
+    __declspec(dllexport) void connectToServer(int port, std::string ipAddr, std::string msg)
     {
         int sock_descriptor, buffer;
         buffer = 256;
